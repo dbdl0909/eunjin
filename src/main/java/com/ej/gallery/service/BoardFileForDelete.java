@@ -1,5 +1,6 @@
 package com.ej.gallery.service;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;
@@ -44,8 +45,7 @@ public class BoardFileForDelete {
 	
 	@Override
 	public String toString() {
-		return "BoardFileForDelete [boardFileNo.length=" + boardFileNo.length + ", boardArticleNo=" + boardArticleNo + ", boardTitle="
-				+ boardTitle + ", boardContent=" + boardContent + ", boardImage=" + boardImage + "]";
+		return "BoardFileForDelete [boardFileNo=" + Arrays.toString(boardFileNo) + ", boardArticleNo=" + boardArticleNo
+				+ ", boardTitle=" + boardTitle + ", boardContent=" + boardContent + ", boardImage=" + boardImage + "]";
 	}
-
 }

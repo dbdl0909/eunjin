@@ -16,6 +16,7 @@ import com.ej.gallery.service.BoardFile;
 import com.ej.gallery.service.BoardFileForDelete;
 import com.ej.gallery.service.BoardRequest;
 import com.ej.gallery.service.BoardService;
+import com.ej.gallery.util.BoardContentTypeHelper;
 
 @Controller
 public class BoardController {
@@ -25,11 +26,25 @@ public class BoardController {
 	@Autowired
 	private BoardService boardService;
 	
+	@Autowired
+	private BoardContentTypeHelper BoardContentTypeHelper;
+	
+	//실제경로를 구하려면 request를 활용해야하기 때문에 controller에서 처리한 뒤 service로 값을 넘긴다.
+	//String saveDir = "D:\\leeeunjin\\jjdev_spring\\gallery_ej\\src\\main\\webapp\\upload";
+	String saveDir = "C:\\Users\\dbdl0\\git\\eunjin\\src\\main\\webapp\\upload";
+	
 	@RequestMapping(value="/boardUpdate", method=RequestMethod.POST)
 	public String boardUpdate(Model model, BoardFileForDelete boardFileForDelete) {
-		logger.info("model : {}", model.toString());
 		logger.info("매개변수 확인 : {}", boardFileForDelete.toString());
 		
+		List<MultipartFile> boardImages = boardFileForDelete.getBoardImage();
+		String msg = BoardContentTypeHelper.typeHelper(boardImages);
+		if(msg.equals("그림파일만 업로드 가능!")) {
+			model.addAttribute("msg", msg);
+			return "boardUpdateForm";
+		}
+		
+		boardService.modifyBoard(boardFileForDelete, saveDir);
 		return null;
 	}
 	
@@ -81,22 +96,25 @@ public class BoardController {
 		logger.info("매개변수 확인 : {}", boardRequest.toString());
 		
 		List<MultipartFile> boardImages = boardRequest.getBoardImage();
+		/*
 		if(boardImages != null) {	//파일은 들어왔으나
 			for(MultipartFile multiFile : boardImages) {
 				if(!(multiFile.getContentType().equals("image/png")) &&
 					!(multiFile.getContentType().equals("image/gif")) &&
 					!(multiFile.getContentType().equals("image/jpeg"))) {
-					logger.info("if문");
+					
 					//png, gif, jpeg가 아니면 다시 boardAdd로 포워드 시킨다. 
 					model.addAttribute("msg", "그림파일만 업로드 가능!");
 					
 					return "boardAdd";
 				}
 			}
+		}*/
+		String msg = BoardContentTypeHelper.typeHelper(boardImages);
+		if(msg.equals("그림파일만 업로드 가능!")) {
+			model.addAttribute("msg", msg);
+			return "boardAdd";
 		}
-		
-		//실제경로를 구하려면 request를 활용해야하기 때문에 controller에서 처리한 뒤 service로 값을 넘긴다.
-		String saveDir = "D:\\leeeunjin\\jjdev_spring\\gallery_ej\\src\\main\\webapp\\upload";
 		
 		boardService.addBoard(boardRequest, saveDir);
 		

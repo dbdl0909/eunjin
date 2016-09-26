@@ -26,12 +26,17 @@
 				
 				$('.fileDivClick').click(function() {
 					var divIndex = $('.fileDivClick').index(this);
-					//console.log(divIndex);
+					//console.log('divIndex : ' + divIndex);
 					
 					if (window.confirm('선택한 이미지를 지우시겠습니까?')) {
-						var index = $('.boardFileNo').val();
-						//console.log(index);
-						$('.fileDivClick').eq(divIndex).remove();
+						$('.boardFileNoAll').each(function(index) {
+							if(divIndex == index) {
+								//console.log("선택된 boardFileNo  : " + $(this).val());
+								$('#fileNoSection').append('<div><input type="hidden" class="boardFileNo" name="boardFileNo" value="'+ $(this).val() +'"/></div>');
+								
+								$('.fileDivClick').eq(divIndex).remove();
+							}
+						});						
 					}
 				});
 				
@@ -76,14 +81,15 @@
 				<c:if test='${map["boardFiles"].size() > 0}'>
 					<c:forEach var="boardFile" items='${map["boardFiles"]}' varStatus="status">
 						<div class="fileDivClick">
+							<input type="hidden" class="boardFileNoAll" value="${boardFile.boardFileNo}" />
 							${status.count}
-							
 							<img src="/upload/${boardFile.boardFileName}.${boardFile.boardFileExt}" width="50%" />
-							<input type="hidden" class="boardFileNo" name="boardFileNo" value="${boardFile.boardFileNo}" />
 						</div>
 					</c:forEach>
 				</c:if>
 				<div>
+					<div id="fileNoSection">
+					</div>
 					<input type="hidden" name="boardArticleNo" value='${map["boardArticle"].boardArticleNo}' />
 					<input type="button" id="boardUpdateBtn" value="수정" />
 					<input type="button" id="backBtn" value="취소" />

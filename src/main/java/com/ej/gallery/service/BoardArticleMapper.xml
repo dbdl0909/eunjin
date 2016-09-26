@@ -3,6 +3,14 @@
 PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ej.gallery.service.BoardArticleMapper">
+	<update id="updateBoardArticleByKey" parameterType="com.ej.gallery.service.BoardArticle">
+		UPDATE board_article SET
+			board_article_title = #{boardArticleTitle},
+			board_article_content = #{boardArticleContect}
+		WHERE
+			board_article_no = #{boardArticleNo}
+	</update>
+
 	<delete id="deleteBoardArticleByKey" parameterType="int">
 		DELETE FROM board_article
 		WHERE board_article_no = #{boardArticleNo}

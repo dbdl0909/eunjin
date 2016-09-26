@@ -12,6 +12,10 @@ public class BoardArticleDao {
 	private SqlSessionTemplate sqlSession;
 	final String NS ="com.ej.gallery.service.BoardArticleMapper";
 	
+	public int updateBoardArticleByKey(BoardArticle boardArticle) {
+		return sqlSession.update(NS+".updateBoardArticleByKey", boardArticle);
+	}
+	
 	public int deleteBoardArticleByKey(int boardArticleNo) {
 		return sqlSession.delete(NS+".deleteBoardArticleByKey", boardArticleNo);
 	}

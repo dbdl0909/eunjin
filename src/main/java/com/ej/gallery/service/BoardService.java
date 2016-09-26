@@ -23,10 +23,35 @@ public class BoardService {
 	private BoardArticleDao boardArticleDao;
 	@Autowired
 	private BoardFileDao boardFileDao;
+	
+	//실제경로를 구하려면 request를 활용해야하기 때문에 controller에서 처리한 뒤 service로 값을 넘긴다.
+	//String saveDir = "D:\\leeeunjin\\jjdev_spring\\gallery_ej\\src\\main\\webapp\\upload";
+	String saveDir = "C:\\Users\\dbdl0\\git\\eunjin\\src\\main\\webapp\\upload";
+
+	public void modifyBoard(BoardFileForDelete boardFileForDelete, String saveDir) {
+		BoardArticle boardArticle = new BoardArticle();
+		boardArticle.setBoardArticleNo(boardFileForDelete.getBoardArticleNo());
+		boardArticle.setBoardArticleTitle(boardFileForDelete.getBoardTitle());
+		boardArticle.setBoardArticleContect(boardFileForDelete.getBoardContent());
+		logger.info("boardArticle에 담긴 값 : {}", boardArticle.toString());
+		
+		boardArticleDao.updateBoardArticleByKey(boardArticle);
+		
+		int[] boardFilesNo = boardFileForDelete.getBoardFileNo();
+		HashMap<String, Object> filesNo = new HashMap<String, Object>();
+		filesNo.put("filesNo", boardFilesNo);
+		
+		boardFileDao.deleteBoardFileByKey(filesNo);
+		
+		
+	}
 
 	public void getBoardDelete(List<BoardFile> boardFiles, int boardArticleNo) {
+		//테이블간에 시퀀스(BoardArticle(PK), BoardFile(FK))가 설정되어있기 때문에 BoardFile테이블의 데이터부터 삭제한 뒤 BoardArticle테이블의 데이터 삭제!
+		boardFileDao.deleteBoardFileByFK(boardArticleNo);
+		boardArticleDao.deleteBoardArticleByKey(boardArticleNo);
+		
 		//디렉토리에 있는 파일들을 삭제하는 코드
-		String saveDir = "D:\\leeeunjin\\jjdev_spring\\gallery_ej\\src\\main\\webapp\\upload";
 		for(BoardFile boardFile : boardFiles) {
 			String fileName = boardFile.getBoardFileName() + "." + boardFile.getBoardFileExt();
 			logger.info("삭제할 fileName : {}", fileName);
@@ -39,10 +64,6 @@ public class BoardService {
 				logger.info("fileName 삭제 실패!");
 			}
 		}
-		
-		//테이블간에 시퀀스(BoardArticle(PK), BoardFile(FK))가 설정되어있기 때문에 BoardFile테이블의 데이터부터 삭제한 뒤 BoardArticle테이블의 데이터 삭제!
-		boardFileDao.deleteBoardFileByFK(boardArticleNo);
-		boardArticleDao.deleteBoardArticleByKey(boardArticleNo);
 	}
 	
 	public List<BoardFile> getBoardFileNameExt(int boardArticleNo) {
@@ -68,7 +89,6 @@ public class BoardService {
 		BoardArticle boardArticle = new BoardArticle();
 		boardArticle.setBoardArticleTitle(boardRequest.getBoardTitle());
 		boardArticle.setBoardArticleContect(boardRequest.getBoardContent());
-		
 		logger.info("boardArticle에 담긴 값 : {}", boardArticle.toString());
 		
 		//BoardArticleDao 호출 -> INSERT : 데이터 입력, PrimaryKey 값 가지고와서 BoardArticle.getBoardArticleNo 에 담기
