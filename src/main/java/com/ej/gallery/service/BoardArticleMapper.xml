@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ej.gallery.service.BoardArticleMapper">
+	<delete id="deleteBoardArticleByKey" parameterType="int">
+		DELETE FROM board_article
+		WHERE board_article_no = #{boardArticleNo}
+	</delete>
+
+	<select id="selectBoardArticleContentByKey" parameterType="int" resultType="com.ej.gallery.service.BoardArticle">
+		SELECT
+			board_article_no as boardArticleNo,
+			board_article_title as boardArticleTitle,
+			board_article_content as boardArticleContect
+		FROM
+			board_article
+		WHERE
+			board_article_no = #{boardArticleNo}
+	</select>
+	
+	<select id="selectBoardArticleList" resultType="com.ej.gallery.service.BoardArticle">
+		SELECT
+			board_article_no as boardArticleNo,
+			board_article_title as boardArticleTitle
+		FROM
+			board_article
+	</select>
+
+	<insert id="insertBoardArticle" parameterType="com.ej.gallery.service.BoardArticle">
+		<selectKey resultType="int" keyProperty="boardArticleNo" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+		INSERT INTO board_article(
+			board_article_title,
+			board_article_content
+		) VALUES(
+			#{boardArticleTitle},
+			#{boardArticleContect}
+		)
+	</insert>
+</mapper>
