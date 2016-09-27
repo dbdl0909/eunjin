@@ -1,4 +1,4 @@
-package com.ej.gallery.service;
+package com.ej.gallery.util;
 
 public class PageHelper {
 	private int startRow;
