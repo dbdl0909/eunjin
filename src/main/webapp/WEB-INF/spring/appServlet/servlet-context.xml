@@ -29,12 +29,13 @@
 	
 	<bean id="multipartResolver" class="org.springframework.web.multipart.support.StandardServletMultipartResolver"></bean>
 	
+	<context:property-placeholder location="classpath:db.properties"/>
 	<!--  datasource -->
     <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
-        <property name="driverClassName" value="com.mysql.jdbc.Driver" />
-        <property name="url" value="jdbc:mysql://localhost:3306/sample" /> <!-- xml에는 & 사용 불가 -->
-        <property name="username" value="root" />
-        <property name="password" value="java0000" />  
+        <property name="driverClassName" value="${db.driverClassName}" />
+        <property name="url" value="${db.url}" />	<!-- xml에는 & 사용 불가 -->
+        <property name="username" value="${db.username}" />
+        <property name="password" value="${db.password}" /> 
     </bean>
    
     <!-- transaction manager --> <!-- db 처리할 것을 spring으로 위임 -->
